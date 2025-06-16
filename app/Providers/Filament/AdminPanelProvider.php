@@ -27,6 +27,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->spa()
+            ->unsavedChangesAlerts()
             ->login()
             ->brandName('EsKepal')
             ->colors([
