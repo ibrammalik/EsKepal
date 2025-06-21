@@ -16,11 +16,16 @@ return new class extends Migration
             $table->string('nik')->unique();
             $table->string('nama');
             $table->text('alamat');
-            $table->string('rw');
-            $table->string('rt');
             $table->enum('jenis_kelamin', ['L', 'P']);
-            $table->enum('status_kependudukan', ['Tetap', 'Kontrak', 'Pindah', 'Meninggal']);
             $table->date('tanggal_lahir');
+            $table->string('tempat_lahir')->nullable();
+            $table->foreignId('rt_id')->constrained();
+            $table->foreignId('rw_id')->constrained();
+            $table->foreignId('agama_id')->nullable()->constrained();
+            $table->enum('status_kependudukan', ['Tetap', 'Kontrak', 'Pindah', 'Meninggal']);
+            $table->foreignId('pekerjaan_id')->nullable()->constrained();
+            $table->foreignId('status_perkawinan_id')->nullable()->constrained();
+            $table->foreignId('status_kependudukan_id')->nullable()->constrained();
             $table->timestamps();
         });
     }
