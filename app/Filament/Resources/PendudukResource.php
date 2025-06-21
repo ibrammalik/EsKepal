@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class PendudukResource extends Resource
 {
+    protected static ?string $navigationGroup = 'Kependudukan';
     protected static ?string $navigationLabel = 'Data Penduduk';
     protected static ?string $pluralModelLabel = 'Penduduk';
     protected static ?string $modelLabel = 'Penduduk';
