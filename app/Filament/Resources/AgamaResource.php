@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\AgamaResource\Pages;
 use App\Filament\Resources\AgamaResource\RelationManagers;
 use App\Models\Agama;
+use App\Traits\OnlyAdminKelurahan;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -16,6 +17,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class AgamaResource extends Resource
 {
+    use OnlyAdminKelurahan;
+
     protected static ?string $model = Agama::class;
     protected static ?string $navigationGroup = 'Master Data';
 

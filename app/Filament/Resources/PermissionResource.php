@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\PermissionResource\Pages;
 use App\Filament\Resources\PermissionResource\RelationManagers;
+use App\Traits\OnlyAdminKelurahan;
 use Filament\Forms;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -17,11 +18,11 @@ use Spatie\Permission\Models\Permission;
 
 class PermissionResource extends Resource
 {
-    protected static ?string $model = Permission::class;
+    use OnlyAdminKelurahan;
 
+    protected static ?string $model = Permission::class;
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationGroup = 'Manajemen Akses';
-
 
     public static function form(Form $form): Form
     {

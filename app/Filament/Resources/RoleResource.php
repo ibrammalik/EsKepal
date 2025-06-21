@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\RoleResource\Pages;
 use App\Filament\Resources\RoleResource\RelationManagers;
+use App\Traits\OnlyAdminKelurahan;
 use Filament\Forms;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -17,8 +18,9 @@ use Spatie\Permission\Models\Role;
 
 class RoleResource extends Resource
 {
-    protected static ?string $model = Role::class;
+    use OnlyAdminKelurahan;
 
+    protected static ?string $model = Role::class;
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationGroup = 'Manajemen Akses';
 

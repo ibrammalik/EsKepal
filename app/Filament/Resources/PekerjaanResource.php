@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\PekerjaanResource\Pages;
 use App\Filament\Resources\PekerjaanResource\RelationManagers;
 use App\Models\Pekerjaan;
+use App\Traits\OnlyAdminKelurahan;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -16,6 +17,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class PekerjaanResource extends Resource
 {
+    use OnlyAdminKelurahan;
+
     protected static ?string $model = Pekerjaan::class;
     protected static ?string $navigationGroup = 'Master Data';
 

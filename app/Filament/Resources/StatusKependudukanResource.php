@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\StatusKependudukanResource\Pages;
 use App\Filament\Resources\StatusKependudukanResource\RelationManagers;
 use App\Models\StatusKependudukan;
+use App\Traits\OnlyAdminKelurahan;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -16,6 +17,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class StatusKependudukanResource extends Resource
 {
+    use OnlyAdminKelurahan;
+
     protected static ?string $model = StatusKependudukan::class;
     protected static ?string $navigationGroup = 'Master Data';
 
