@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             StatusPerkawinanSeeder::class,
             StatusKependudukanSeeder::class,
             PekerjaanSeeder::class,
+            UserRolePermissionSeeder::class,
         ]);
     }
 }
