@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('rts', function (Blueprint $table) {
             $table->id();
+            $table->string('nomor');
+            $table->foreignId('rw_id')->constrained();
             $table->timestamps();
         });
     }
