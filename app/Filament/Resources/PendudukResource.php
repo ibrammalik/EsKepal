@@ -7,7 +7,10 @@ use App\Filament\Resources\PendudukResource\RelationManagers;
 use App\Models\Penduduk;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Fieldset;
+use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -30,23 +33,29 @@ class PendudukResource extends Resource
     public static function form(Form $form): Form
     {
         return $form->schema([
-            TextInput::make('nik')->required()->maxLength(16),
-            TextInput::make('nama')->required(),
-            Textarea::make('alamat')->required(),
-            TextInput::make('rw')->label('RW')->required(),
-            TextInput::make('rt')->label('RT')->required(),
-            Select::make('jenis_kelamin')
-                ->options(['L' => 'Laki-laki', 'P' => 'Perempuan'])
-                ->required(),
-            Select::make('status_kependudukan')
-                ->options([
-                    'Tetap' => 'Tetap',
-                    'Kontrak' => 'Kontrak',
-                    'Pindah' => 'Pindah',
-                    'Meninggal' => 'Meninggal',
-                ])
-                ->required(),
-            DatePicker::make('tanggal_lahir')->required(),
+            Fieldset::make('Data Pribadi')->schema([
+                TextInput::make('nik')->numeric()->label('NIK')->extraAttributes([
+                    'class' => 'hide-number-arrows',
+                ]),
+                TextInput::make('nama'),
+                DatePicker::make('tanggal_lahir'),
+                Grid::make(3)->schema([
+                    Textarea::make('alamat')->required(),
+                    TextInput::make('rt')->label('RT')->required(),
+                    TextInput::make('rw')->label('RW')->required(),
+                ]),
+                Select::make('jenis_kelamin')
+                    ->options(['L' => 'Laki-laki', 'P' => 'Perempuan'])
+                    ->required(),
+                Select::make('status_kependudukan')
+                    ->options([
+                        'Tetap' => 'Tetap',
+                        'Kontrak' => 'Kontrak',
+                        'Pindah' => 'Pindah',
+                        'Meninggal' => 'Meninggal',
+                    ])
+                    ->required(),
+            ]),
         ]);
     }
 
