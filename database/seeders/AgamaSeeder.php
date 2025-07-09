@@ -25,7 +25,7 @@ class AgamaSeeder extends Seeder
 
         foreach ($agamas as $agama) {
             DB::table('agamas')->insert([
-                'agama' => $agama,
+                'name' => $agama,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

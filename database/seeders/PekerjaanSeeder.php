@@ -29,7 +29,7 @@ class PekerjaanSeeder extends Seeder
             'Lainnya'
         ];
         foreach ($pekerjaans as $pekerjaan) {
-            DB::table('pekerjaans')->insert(['pekerjaan' => $pekerjaan, 'created_at' => now(), 'updated_at' => now()]);
+            DB::table('pekerjaans')->insert(['name' => $pekerjaan, 'created_at' => now(), 'updated_at' => now()]);
         }
     }
 }

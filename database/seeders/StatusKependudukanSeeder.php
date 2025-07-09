@@ -15,7 +15,7 @@ class StatusKependudukanSeeder extends Seeder
     {
         $statuses = ['Aktif', 'Pindah', 'Meninggal', 'Pendatang'];
         foreach ($statuses as $status) {
-            DB::table('status_kependudukans')->insert(['status' => $status, 'created_at' => now(), 'updated_at' => now()]);
+            DB::table('status_kependudukans')->insert(['name' => $status, 'created_at' => now(), 'updated_at' => now()]);
         }
     }
 }

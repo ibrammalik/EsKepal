@@ -16,7 +16,7 @@ class StatusPerkawinanSeeder extends Seeder
         $statuses = ['Belum Kawin', 'Kawin', 'Cerai Hidup', 'Cerai Mati'];
 
         foreach ($statuses as $status) {
-            DB::table('status_perkawinans')->insert(['status' => $status, 'created_at' => now(), 'updated_at' => now()]);
+            DB::table('status_perkawinans')->insert(['name' => $status, 'created_at' => now(), 'updated_at' => now()]);
         }
     }
 }
