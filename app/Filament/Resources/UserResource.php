@@ -54,7 +54,8 @@ class UserResource extends Resource
                     ->preload()
                     ->searchable()
                     ->required()
-                    ->reactive(),
+                    ->reactive()
+                    ->multiple(),
 
                 Select::make('rw_id')
                     ->label('Wilayah RW')
