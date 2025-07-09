@@ -23,38 +23,86 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class PendudukResource extends Resource
 {
-    protected static ?string $navigationGroup = 'Kependudukan';
-    protected static ?string $navigationLabel = 'Data Penduduk';
-    protected static ?string $pluralModelLabel = 'Penduduk';
-    protected static ?string $modelLabel = 'Penduduk';
     protected static ?string $model = Penduduk::class;
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationGroup = 'Kependudukan';
+    protected static ?string $navigationLabel = 'Data Penduduk';
+    protected static ?string $pluralModelLabel = 'Data Penduduk';
+    protected static ?string $modelLabel = 'Penduduk';
 
     public static function form(Form $form): Form
     {
         return $form->schema([
             Fieldset::make('Data Pribadi')->schema([
-                TextInput::make('nik')->numeric()->label('NIK')->extraAttributes([
-                    'class' => 'hide-number-arrows',
+                TextInput::make('nik')
+                    ->label('NIK')
+                    ->numeric()
+                    ->required()
+                    ->unique(ignoreRecord: true)
+                    ->extraAttributes(['class' => 'hide-number-arrows']),
+
+                TextInput::make('nama')->label('Nama')->required(),
+
+                Grid::make(2)->schema([
+                    TextInput::make('tempat_lahir')->label('Tempat Lahir')->required(),
+                    DatePicker::make('tanggal_lahir')->label('Tanggal Lahir')->required(),
                 ]),
-                TextInput::make('nama'),
-                DatePicker::make('tanggal_lahir'),
+
+                Textarea::make('alamat')->label('Alamat')->required()->columnSpanFull(),
+
+                Grid::make(2)->schema([
+                    Select::make('rw_id')
+                        ->label('RW')
+                        ->relationship('rw', 'nomor')
+                        ->required()
+                        ->searchable()
+                        ->preload()
+                        ->reactive()
+                        ->afterStateUpdated(fn(callable $set) => $set('rt_id', null)),
+
+                    Select::make('rt_id')
+                        ->label('RT')
+                        ->required()
+                        ->searchable()
+                        ->preload()
+                        ->options(function (callable $get) {
+                            $rwId = $get('rw_id');
+                            return $rwId ? \App\Models\Rt::where('rw_id', $rwId)->pluck('nomor', 'id') : [];
+                        }),
+                ]),
+
+                Grid::make(2)->schema([
+                    Select::make('jenis_kelamin')
+                        ->label('Jenis Kelamin')
+                        ->options(['L' => 'Laki-laki', 'P' => 'Perempuan'])
+                        ->required(),
+
+                    Select::make('status_kependudukan_id')
+                        ->label('Status Kependudukan')
+                        ->relationship('statusKependudukan', 'name')
+                        ->searchable()
+                        ->preload(),
+                ]),
+
                 Grid::make(3)->schema([
-                    Textarea::make('alamat')->required(),
-                    TextInput::make('rt')->label('RT')->required(),
-                    TextInput::make('rw')->label('RW')->required(),
+                    Select::make('agama_id')
+                        ->label('Agama')
+                        ->relationship('agama', 'name')
+                        ->searchable()
+                        ->preload(),
+
+                    Select::make('pekerjaan_id')
+                        ->label('Pekerjaan')
+                        ->relationship('pekerjaan', 'name')
+                        ->searchable()
+                        ->preload(),
+
+                    Select::make('status_perkawinan_id')
+                        ->label('Status Perkawinan')
+                        ->relationship('statusPerkawinan', 'name')
+                        ->searchable()
+                        ->preload(),
                 ]),
-                Select::make('jenis_kelamin')
-                    ->options(['L' => 'Laki-laki', 'P' => 'Perempuan'])
-                    ->required(),
-                Select::make('status_kependudukan')
-                    ->options([
-                        'Tetap' => 'Tetap',
-                        'Kontrak' => 'Kontrak',
-                        'Pindah' => 'Pindah',
-                        'Meninggal' => 'Meninggal',
-                    ])
-                    ->required(),
             ]),
         ]);
     }
@@ -63,34 +111,35 @@ class PendudukResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('nik')->searchable(),
-                Tables\Columns\TextColumn::make('nama')->searchable(),
-                Tables\Columns\TextColumn::make('rw'),
-                Tables\Columns\TextColumn::make('rt'),
+                Tables\Columns\TextColumn::make('nik')->label('NIK')->searchable()->sortable(),
+                Tables\Columns\TextColumn::make('nama')->searchable()->sortable(),
+                Tables\Columns\TextColumn::make('rw.nomor')->label('RW')->sortable(),
+                Tables\Columns\TextColumn::make('rt.nomor')->label('RT')->sortable(),
                 Tables\Columns\TextColumn::make('jenis_kelamin')->label('JK'),
-                Tables\Columns\TextColumn::make('status_kependudukan'),
-                Tables\Columns\TextColumn::make('tanggal_lahir')->date(),
+                Tables\Columns\TextColumn::make('statusKependudukan.name')->label('Status Kependudukan'),
+                Tables\Columns\TextColumn::make('tanggal_lahir')->label('Tanggal Lahir')->date(),
+                Tables\Columns\TextColumn::make('agama.name')->label('Agama'),
+                Tables\Columns\TextColumn::make('pekerjaan.name')->label('Pekerjaan'),
+                Tables\Columns\TextColumn::make('statusPerkawinan.name')->label('Status Perkawinan'),
             ])
             ->filters([
-                SelectFilter::make('rw')
-                    ->label('RW')
-                    ->options(Penduduk::query()->distinct()->pluck('rw', 'rw')->toArray()),
-                SelectFilter::make('status_kependudukan')
-                    ->options([
-                        'Tetap' => 'Tetap',
-                        'Kontrak' => 'Kontrak',
-                        'Pindah' => 'Pindah',
-                        'Meninggal' => 'Meninggal',
-                    ]),
+                SelectFilter::make('rw_id')->label('RW')->relationship('rw', 'nomor'),
+                SelectFilter::make('rt_id')->label('RT')->relationship('rt', 'nomor'),
+                SelectFilter::make('jenis_kelamin')->label('Jenis Kelamin')->options([
+                    'L' => 'Laki-laki',
+                    'P' => 'Perempuan',
+                ]),
+                SelectFilter::make('status_kependudukan_id')->label('Detail Status')->relationship('statusKependudukan', 'name'),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ]);
+                Tables\Actions\DeleteBulkAction::make(),
+            ])
+            ->defaultSort('nama', 'asc');
     }
 
     public static function getRelations(): array
