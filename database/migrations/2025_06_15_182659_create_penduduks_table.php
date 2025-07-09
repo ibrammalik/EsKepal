@@ -18,7 +18,7 @@ return new class extends Migration
             $table->text('alamat');
             $table->enum('jenis_kelamin', ['L', 'P']);
             $table->date('tanggal_lahir');
-            $table->string('tempat_lahir')->nullable();
+            $table->string('tempat_lahir');
             $table->foreignId('rt_id')->constrained();
             $table->foreignId('rw_id')->constrained();
             $table->foreignId('agama_id')->nullable()->constrained();

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('status_kependudukans', function (Blueprint $table) {
             $table->id();
-            $table->string('status');
+            $table->string('name');
             $table->timestamps();
         });
     }
