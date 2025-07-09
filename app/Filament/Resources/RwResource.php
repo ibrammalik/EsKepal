@@ -5,8 +5,8 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\RwResource\Pages;
 use App\Filament\Resources\RwResource\RelationManagers;
 use App\Models\Rw;
-use App\Traits\OnlyAdminKelurahan;
 use Filament\Forms;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -26,7 +26,12 @@ class RwResource extends Resource
     {
         return $form
             ->schema([
-                //
+                TextInput::make('nomor')
+                    ->label('Nomor')
+                    ->integer()
+                    ->minValue(1)
+                    ->required()
+                    ->unique(ignoreRecord: true),
             ]);
     }
 
@@ -34,10 +39,23 @@ class RwResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('nomor'),
+                TextColumn::make('nomor')->label('Nomor')->searchable()->sortable(),
+                TextColumn::make('created_at')
+                    ->label('Dibuat')
+                    ->dateTime('d M Y H:i')
+                    ->sortable(),
+
+                TextColumn::make('updated_at')
+                    ->label('Dirubah')
+                    ->dateTime('d M Y H:i')
+                    ->sortable(),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('nomor')
+                    ->label('Filter Nomor RW')
+                    ->options(
+                        fn() => Rw::query()->pluck('nomor', 'nomor')->sort()->toArray()
+                    )
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -47,7 +65,8 @@ class RwResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->defaultSort('nomor', 'asc');
     }
 
     public static function getPages(): array
