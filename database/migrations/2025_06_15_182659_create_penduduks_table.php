@@ -22,7 +22,6 @@ return new class extends Migration
             $table->foreignId('rt_id')->constrained();
             $table->foreignId('rw_id')->constrained();
             $table->foreignId('agama_id')->nullable()->constrained();
-            $table->enum('status_kependudukan', ['Tetap', 'Kontrak', 'Pindah', 'Meninggal']);
             $table->foreignId('pekerjaan_id')->nullable()->constrained();
             $table->foreignId('status_perkawinan_id')->nullable()->constrained();
             $table->foreignId('status_kependudukan_id')->nullable()->constrained();
