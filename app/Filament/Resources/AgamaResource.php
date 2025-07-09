@@ -17,8 +17,6 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class AgamaResource extends Resource
 {
-    use OnlyAdminKelurahan;
-
     protected static ?string $model = Agama::class;
     protected static ?string $navigationGroup = 'Master Data';
 

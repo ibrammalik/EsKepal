@@ -17,8 +17,6 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class PekerjaanResource extends Resource
 {
-    use OnlyAdminKelurahan;
-
     protected static ?string $model = Pekerjaan::class;
     protected static ?string $navigationGroup = 'Master Data';
 

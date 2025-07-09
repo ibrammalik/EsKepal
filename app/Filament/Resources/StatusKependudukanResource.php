@@ -17,8 +17,6 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class StatusKependudukanResource extends Resource
 {
-    use OnlyAdminKelurahan;
-
     protected static ?string $model = StatusKependudukan::class;
     protected static ?string $navigationGroup = 'Master Data';
 

@@ -17,8 +17,6 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class RwResource extends Resource
 {
-    // use OnlyAdminKelurahan;
-
     protected static ?string $navigationLabel = 'Data RW';
     protected static ?string $navigationGroup = 'Kependudukan';
     protected static ?string $model = Rw::class;
