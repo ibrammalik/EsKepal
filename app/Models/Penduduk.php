@@ -53,4 +53,9 @@ class Penduduk extends Model
     {
         return $this->belongsTo(\App\Models\StatusKependudukan::class);
     }
+
+    public function pendidikan()
+    {
+        return $this->belongsTo(Pendidikan::class);
+    }
 }

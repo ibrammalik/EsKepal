@@ -84,22 +84,31 @@ class PendudukResource extends Resource
                         ->preload(),
                 ]),
 
-                Grid::make(3)->schema([
+                Grid::make(2)->schema([
                     Select::make('agama_id')
                         ->label('Agama')
                         ->relationship('agama', 'name')
                         ->searchable()
                         ->preload(),
 
-                    Select::make('pekerjaan_id')
-                        ->label('Pekerjaan')
-                        ->relationship('pekerjaan', 'name')
-                        ->searchable()
-                        ->preload(),
-
                     Select::make('status_perkawinan_id')
                         ->label('Status Perkawinan')
                         ->relationship('statusPerkawinan', 'name')
+                        ->searchable()
+                        ->preload(),
+                ]),
+
+                Grid::make(2)->schema([
+                    Select::make('pendidikan_id')
+                        ->label('Pendidikan')
+                        ->relationship('pendidikan', 'nama')
+                        ->searchable()
+                        ->required()
+                        ->preload(),
+
+                    Select::make('pekerjaan_id')
+                        ->label('Pekerjaan')
+                        ->relationship('pekerjaan', 'name')
                         ->searchable()
                         ->preload(),
                 ]),
