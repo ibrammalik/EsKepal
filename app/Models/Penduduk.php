@@ -22,6 +22,9 @@ class Penduduk extends Model
         'pekerjaan_id',
         'status_perkawinan_id',
         'status_kependudukan_id',
+        'pendidikan_id',
+        'no_kk',
+        'shdk',
     ];
 
     public function rw()

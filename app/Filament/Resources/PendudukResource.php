@@ -44,6 +44,31 @@ class PendudukResource extends Resource
                 TextInput::make('nama')->label('Nama')->required(),
 
                 Grid::make(2)->schema([
+                    TextInput::make('no_kk')
+                        ->label('Nomor Kartu Keluarga')
+                        ->maxLength(16)
+                        ->required()
+                        ->numeric(),
+
+                    Select::make('shdk')
+                        ->label('Status Hubungan Dalam Keluarga (SHDK)')
+                        ->options([
+                            'Kepala Keluarga' => 'Kepala Keluarga',
+                            'Suami' => 'Suami',
+                            'Istri' => 'Istri',
+                            'Anak' => 'Anak',
+                            'Menantu' => 'Menantu',
+                            'Orang Tua' => 'Orang Tua',
+                            'Mertua' => 'Mertua',
+                            'Pembantu' => 'Pembantu',
+                            'Famili Lain' => 'Famili Lain',
+                            'Lainnya' => 'Lainnya',
+                        ])
+                        ->required()
+                        ->searchable(),
+                ]),
+
+                Grid::make(2)->schema([
                     TextInput::make('tempat_lahir')->label('Tempat Lahir')->required(),
                     DatePicker::make('tanggal_lahir')->label('Tanggal Lahir')->required(),
                 ]),
@@ -122,6 +147,8 @@ class PendudukResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('nik')->label('NIK')->searchable()->sortable(),
                 Tables\Columns\TextColumn::make('nama')->searchable()->sortable(),
+                Tables\Columns\TextColumn::make('no_kk')->label('No KK'),
+                Tables\Columns\TextColumn::make('shdk')->label('SHDK'),
                 Tables\Columns\TextColumn::make('rw.nomor')->label('RW')->sortable(),
                 Tables\Columns\TextColumn::make('rt.nomor')->label('RT')->sortable(),
                 Tables\Columns\TextColumn::make('jenis_kelamin')->label('JK'),
@@ -129,6 +156,7 @@ class PendudukResource extends Resource
                 Tables\Columns\TextColumn::make('tanggal_lahir')->label('Tanggal Lahir')->date(),
                 Tables\Columns\TextColumn::make('agama.name')->label('Agama'),
                 Tables\Columns\TextColumn::make('pekerjaan.name')->label('Pekerjaan'),
+                Tables\Columns\TextColumn::make('pendidikan.nama')->label('Pendidikan'),
                 Tables\Columns\TextColumn::make('statusPerkawinan.name')->label('Status Perkawinan'),
             ])
             ->filters([
