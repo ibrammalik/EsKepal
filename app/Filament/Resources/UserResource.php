@@ -99,14 +99,20 @@ class UserResource extends Resource
                     ->label('Wilayah')
                     ->getStateUsing(function ($record) {
                         $role = $record->getRoleNames()->first();
-                        if ($role === 'ketua_rw') {
-                            return 'RW ' . ($record->rw?->nomor ?? '-');
-                        } elseif ($role === 'super_admin') {
+
+                        if ($role === 'super_admin') {
                             return 'Kelurahan';
-                        } else {
-                            return '-';
+                        } elseif ($role === 'ketua_rw') {
+                            return 'RW ' . ($record->rw?->nomor ?? '-');
+                        } elseif ($role === 'ketua_rt') {
+                            $rt = $record->rt?->nomor;
+                            $rw = $record->rw?->nomor ?? $record->rt?->rw?->nomor;
+                            return 'RT ' . ($rt ?? '-') . ' / RW ' . ($rw ?? '-');
                         }
+
+                        return '-';
                     })
+                    ->sortable(),
             ])
             ->filters([
                 // 

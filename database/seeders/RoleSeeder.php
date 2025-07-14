@@ -20,5 +20,13 @@ class RoleSeeder extends Seeder
             $permissions = collect($actions)->map(fn($action) => "{$action}_{$resource}");
             $ketua_rw->givePermissionTo($permissions);
         }
+
+        $ketua_rt = Role::firstOrCreate(['name' => 'ketua_rt']);
+        $actions = ['view', 'view_any', 'create', 'update', 'delete', 'delete_any', 'restore', 'restore_any', 'force_delete', 'force_delete_any', 'replicate', 'reorder'];
+        $resources = ['penduduk'];
+        foreach ($resources as $resource) {
+            $permissions = collect($actions)->map(fn($action) => "{$action}_{$resource}");
+            $ketua_rt->givePermissionTo($permissions);
+        }
     }
 }

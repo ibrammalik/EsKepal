@@ -59,4 +59,9 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->belongsTo(Rw::class);
     }
+
+    public function rt()
+    {
+        return $this->belongsTo(Rt::class);
+    }
 }
