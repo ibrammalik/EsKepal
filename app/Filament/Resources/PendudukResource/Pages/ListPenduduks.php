@@ -16,4 +16,9 @@ class ListPenduduks extends ListRecords
             Actions\CreateAction::make(),
         ];
     }
+
+    // public function getTitle(): string
+    // {
+    //     return "Test";
+    // }
 }

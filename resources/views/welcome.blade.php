@@ -1,141 +1,170 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <title>Sistem Informasi Penduduk Kelurahan</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body class="bg-gray-100 text-gray-800">
+@extends('layouts.app')
 
-    <!-- Header -->
-    <header class="bg-white shadow">
-        <div class="max-w-6xl mx-auto px-4 py-6 flex justify-between items-center">
-            <div class="text-xl font-bold">Kelurahan Contoh</div>
-            <a href="/admin/login" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Login</a>
-        </div>
-    </header>
+@section('content')
+<!-- Hero -->
+<section class="bg-brand/10 dark:bg-brand/20 py-16 text-center fade-in">
+    <h1 class="text-4xl font-bold mb-4">Elektronik Sistem Kependudukan Kalicari
+    </h1>
+    <p class="text-lg text-gray-600 dark:text-gray-300">Digitalisasi
+        administrasi dan layanan masyarakat tingkat kelurahan</p>
+</section>
 
-    <!-- Hero -->
-    <section class="bg-blue-50 py-16 text-center">
-        <h1 class="text-4xl font-bold mb-4">Sistem Informasi Penduduk</h1>
-        <p class="text-lg text-gray-600">Digitalisasi administrasi dan layanan masyarakat tingkat kelurahan</p>
-    </section>
+<!-- Tentang -->
+<section class="max-w-4xl mx-auto px-4 py-12 fade-in">
+    <h2 class="text-2xl font-semibold mb-4">Tentang Aplikasi</h2>
+    <p class="leading-relaxed">
+        Aplikasi ini membantu kelurahan dan ketua RW untuk mengelola data
+        penduduk, mencatat peristiwa mutasi,
+        serta memudahkan layanan surat menyurat secara online.
+    </p>
+</section>
 
-    <!-- Tentang -->
-    <section class="max-w-4xl mx-auto px-4 py-12">
-        <h2 class="text-2xl font-semibold mb-4">Tentang Aplikasi</h2>
-        <p class="text-gray-700 leading-relaxed">
-            Aplikasi ini membantu kelurahan dan ketua RW untuk mengelola data penduduk, mencatat peristiwa mutasi,
-            serta memudahkan layanan surat menyurat secara online.
-        </p>
-    </section>
+<!-- Statistik Penduduk -->
+<section id="statistik" class="py-12 bg-gray-50 dark:bg-gray-800">
+    <div class="max-w-6xl mx-auto px-4">
+        <h2
+            class="text-2xl font-semibold text-center mb-8 text-gray-800 dark:text-gray-100">
+            Statistik Penduduk</h2>
+        <div class="grid md:grid-cols-2 gap-8">
 
-    <!-- Fitur -->
-    <section class="bg-white py-12">
-        <div class="max-w-6xl mx-auto px-4">
-            <h2 class="text-2xl font-semibold text-center mb-10">Fitur Utama</h2>
-            <div class="grid md:grid-cols-3 gap-6 text-center">
-                <div class="bg-blue-100 p-6 rounded shadow">
-                    <h3 class="font-semibold text-lg mb-2">📄 Pengajuan Surat Online</h3>
-                    <p class="text-gray-600">Ajukan surat tanpa harus datang ke kelurahan secara langsung.</p>
-                </div>
-                <div class="bg-blue-100 p-6 rounded shadow">
-                    <h3 class="font-semibold text-lg mb-2">👪 Pendataan RT/RW</h3>
-                    <p class="text-gray-600">Penduduk dikelompokkan rapi berdasarkan wilayah tempat tinggal.</p>
-                </div>
-                <div class="bg-blue-100 p-6 rounded shadow">
-                    <h3 class="font-semibold text-lg mb-2">📊 Statistik Penduduk</h3>
-                    <p class="text-gray-600">Lihat jumlah dan distribusi penduduk secara langsung dan akurat.</p>
-                </div>
+            <!-- Chart: RW -->
+            <div class="bg-white dark:bg-gray-900 p-4 rounded shadow">
+                <h3
+                    class="font-semibold text-center mb-2 text-gray-700 dark:text-gray-200">
+                    Jumlah Penduduk per RW</h3>
+                <canvas id="rwChart" height="200"></canvas>
+            </div>
+
+            <!-- Chart: Jenis Kelamin -->
+            <div class="bg-white dark:bg-gray-900 p-4 rounded shadow">
+                <h3
+                    class="font-semibold text-center mb-2 text-gray-700 dark:text-gray-200">
+                    Komposisi Jenis Kelamin</h3>
+                <canvas id="genderChart" height="200"></canvas>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Statistik Penduduk -->
-    <section class="py-12 bg-gray-50">
-        <div class="max-w-6xl mx-auto px-4">
-            <h2 class="text-2xl font-semibold text-center mb-8">Statistik Penduduk (Contoh Data)</h2>
-            <div class="grid md:grid-cols-2 gap-8">
-
-                <!-- Chart: RW -->
-                <div class="bg-white p-4 rounded shadow">
-                    <h3 class="font-semibold text-center mb-2">Jumlah Penduduk per RW</h3>
-                    <canvas id="rwChart" height="200"></canvas>
-                </div>
-
-                <!-- Chart: Jenis Kelamin -->
-                <div class="bg-white p-4 rounded shadow">
-                    <h3 class="font-semibold text-center mb-2">Komposisi Jenis Kelamin</h3>
-                    <canvas id="genderChart" height="200"></canvas>
-                </div>
-
-            </div>
+<!-- Rekapitulasi Penduduk -->
+<section id="rekap" class="py-12 bg-white dark:bg-gray-900">
+    <div class="max-w-6xl mx-auto px-4">
+        <h2
+            class="text-2xl font-semibold text-center mb-6 text-gray-800 dark:text-gray-100">
+            Rekapitulasi Penduduk</h2>
+        <div class="overflow-x-auto">
+            <table class="w-full table-auto border-collapse">
+                <thead>
+                    <tr
+                        class="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-100">
+                        <th class="border px-4 py-2">RW</th>
+                        <th class="border px-4 py-2">Jumlah KK</th>
+                        <th class="border px-4 py-2">Jumlah Penduduk</th>
+                        <th class="border px-4 py-2">Laki-laki</th>
+                        <th class="border px-4 py-2">Perempuan</th>
+                    </tr>
+                </thead>
+                <tbody class="text-gray-600 dark:text-gray-300">
+                    <tr>
+                        <td class="border px-4 py-2 text-center">01</td>
+                        <td class="border px-4 py-2 text-center">120</td>
+                        <td class="border px-4 py-2 text-center">450</td>
+                        <td class="border px-4 py-2 text-center">230</td>
+                        <td class="border px-4 py-2 text-center">220</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2 text-center">02</td>
+                        <td class="border px-4 py-2 text-center">98</td>
+                        <td class="border px-4 py-2 text-center">370</td>
+                        <td class="border px-4 py-2 text-center">190</td>
+                        <td class="border px-4 py-2 text-center">180</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2 text-center">03</td>
+                        <td class="border px-4 py-2 text-center">110</td>
+                        <td class="border px-4 py-2 text-center">400</td>
+                        <td class="border px-4 py-2 text-center">210</td>
+                        <td class="border px-4 py-2 text-center">190</td>
+                    </tr>
+                </tbody>
+                <tfoot
+                    class="bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-100">
+                    <tr>
+                        <td class="border px-4 py-2 text-center font-bold">Total
+                        </td>
+                        <td class="border px-4 py-2 text-center font-bold">328
+                        </td>
+                        <td class="border px-4 py-2 text-center font-bold">1.220
+                        </td>
+                        <td class="border px-4 py-2 text-center font-bold">630
+                        </td>
+                        <td class="border px-4 py-2 text-center font-bold">590
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Kontak -->
-    <section class="py-12 bg-white">
-        <div class="max-w-4xl mx-auto px-4">
-            <h2 class="text-2xl font-semibold mb-4">Kontak Kelurahan</h2>
-            <p><strong>Alamat:</strong> Jl. Contoh No.123, Kelurahan Contoh</p>
-            <p><strong>Telepon:</strong> 0812-3456-7890</p>
-            <p><strong>Email:</strong> kelurahan@example.com</p>
-            <p><strong>Jam Layanan:</strong> Senin–Jumat, 08.00–15.00 WIB</p>
-        </div>
-    </section>
+<!-- Kontak -->
+<section class="py-12 bg-white dark:bg-gray-800 fade-in">
+    <div class="max-w-4xl mx-auto px-4">
+        <h2 class="text-2xl font-semibold mb-4">Kontak Kelurahan</h2>
+        <p><strong>Alamat:</strong> Jl. Contoh No.123, Kalicari</p>
+        <p><strong>Telepon:</strong> 0812-3456-7890</p>
+        <p><strong>Email:</strong> kelurahan@example.com</p>
+        <p><strong>Jam Layanan:</strong> Senin–Jumat, 08.00–15.00 WIB</p>
+    </div>
+</section>
 
-    <!-- Footer -->
-    <footer class="text-center py-6 text-gray-500 text-sm">
-        &copy; {{ date('Y') }} Kelurahan Contoh. Semua Hak Dilindungi.
-    </footer>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+            // Fade-in
+            document.querySelectorAll('.fade-in').forEach(el => {
+                el.classList.add('opacity-0', 'translate-y-4');
+                const observer = new IntersectionObserver(entries => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.remove('opacity-0', 'translate-y-4');
+                            entry.target.classList.add('transition', 'duration-700', 'ease-out');
+                        }
+                    });
+                });
+                observer.observe(el);
+            });
 
-    <!-- Chart Scripts -->
-    <script>
-        // Dummy data RW
-        const rwLabels = ['RW 01', 'RW 02', 'RW 03'];
-        const rwData = [120, 95, 140];
-
-        // Dummy data jenis kelamin
-        const genderLabels = ['Laki-laki', 'Perempuan'];
-        const genderData = [180, 175];
-
-        // Chart RW
-        new Chart(document.getElementById('rwChart'), {
-            type: 'bar',
-            data: {
-                labels: rwLabels,
-                datasets: [{
-                    label: 'Jumlah Penduduk',
-                    data: rwData,
-                    backgroundColor: '#3b82f6'
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: { beginAtZero: true }
+            // Chart
+            new Chart(document.getElementById('rwChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['RW 01', 'RW 02', 'RW 03'],
+                    datasets: [{
+                        label: 'Jumlah Penduduk',
+                        data: [120, 95, 140],
+                        backgroundColor: '#DC2626'
+                    }]
                 }
-            }
-        });
+            });
 
-        // Chart Gender
-        new Chart(document.getElementById('genderChart'), {
-            type: 'doughnut',
-            data: {
-                labels: genderLabels,
-                datasets: [{
-                    label: 'Jenis Kelamin',
-                    data: genderData,
-                    backgroundColor: ['#60a5fa', '#f472b6']
-                }]
-            },
-            options: {
-                responsive: true,
-            }
-        });
-    </script>
+            new Chart(document.getElementById('genderChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Laki-laki', 'Perempuan'],
+                    datasets: [{
+                        data: [180, 175],
+                        backgroundColor: ['#DC2626', '#fbbf24']
+                    }]
+                }
+            });
 
-</body>
-</html>
+            // CountUp
+            const countPenduduk = new countUp.CountUp('countPenduduk', 355);
+            const countKK = new countUp.CountUp('countKK', 125);
+            const countRW = new countUp.CountUp('countRW', 3);
+            countPenduduk.start();
+            countKK.start();
+            countRW.start();
+        });
+</script>
+@endsection

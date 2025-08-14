@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources;
 
+use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
+use App\Filament\Pages\DaftarKeluarga;
 use App\Filament\Resources\PendudukResource\Pages;
 use App\Filament\Resources\PendudukResource\RelationManagers;
 use App\Models\Penduduk;
@@ -16,10 +18,12 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 
 class PendudukResource extends Resource
 {
@@ -167,6 +171,37 @@ class PendudukResource extends Resource
                     'P' => 'Perempuan',
                 ]),
                 SelectFilter::make('status_kependudukan_id')->label('Detail Status')->relationship('statusKependudukan', 'name'),
+                Filter::make('usia')
+                    ->form([
+                        Forms\Components\TextInput::make('usia_min')->numeric()->label('Usia Minimal'),
+                        Forms\Components\TextInput::make('usia_max')->numeric()->label('Usia Maksimal'),
+                    ])
+                    ->query(function (Builder $query, array $data) {
+                        return $query
+                            ->when(
+                                $data['usia_min'],
+                                fn($q, $usiaMin) =>
+                                $q->whereRaw('TIMESTAMPDIFF(YEAR, tanggal_lahir, CURDATE()) >= ?', [$usiaMin])
+                            )
+                            ->when(
+                                $data['usia_max'],
+                                fn($q, $usiaMax) =>
+                                $q->whereRaw('TIMESTAMPDIFF(YEAR, tanggal_lahir, CURDATE()) <= ?', [$usiaMax])
+                            );
+                    })
+                    ->indicateUsing(function (array $data): array {
+                        $indicators = [];
+
+                        if ($data['usia_min'] ?? null) {
+                            $indicators[] = 'Usia ≥ ' . $data['usia_min'];
+                        }
+                        if ($data['usia_max'] ?? null) {
+                            $indicators[] = 'Usia ≤ ' . $data['usia_max'];
+                        }
+
+                        return $indicators;
+                    }),
+
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
@@ -176,13 +211,16 @@ class PendudukResource extends Resource
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
             ])
+            ->headerActions([
+                FilamentExportHeaderAction::make('export')
+            ])
             ->defaultSort('nama', 'asc');
     }
 
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\AnggotaKeluargaRelationManager::class,
         ];
     }
 
@@ -193,5 +231,30 @@ class PendudukResource extends Resource
             'create' => Pages\CreatePenduduk::route('/create'),
             'edit' => Pages\EditPenduduk::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+
+        $user = auth()->user();
+
+        // Super admin lihat semua
+        if ($user->hasRole('super_admin')) {
+            return $query;
+        }
+
+        // Ketua RW hanya lihat penduduk sesuai RW
+        if ($user->hasRole('ketua_rw')) {
+            return $query->where('rw_id', $user->rw_id);
+        }
+
+        // Ketua RT hanya lihat penduduk sesuai RT
+        if ($user->hasRole('ketua_rt')) {
+            return $query->where('rt_id', $user->rt_id);
+        }
+
+        // Jika tidak punya hak akses
+        return $query->whereRaw('0 = 1');
     }
 }

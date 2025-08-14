@@ -16,8 +16,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class PendidikanResource extends Resource
 {
     protected static ?string $model = Pendidikan::class;
-    protected static ?string $navigationGroup = 'Master Data';
-    // protected static ?string $navigationIcon = 'heroicon-o-book-open';
+
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
     {
@@ -25,15 +25,9 @@ class PendidikanResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('nama')
                     ->required()
-                    ->label('Nama Jenjang Pendidikan'),
-
-                Forms\Components\Select::make('kategori')
-                    ->options([
-                        'Umum' => 'Umum',
-                        'Khusus' => 'Khusus',
-                    ])
-                    ->required()
-                    ->label('Kategori Pendidikan'),
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('kategori')
+                    ->required(),
             ]);
     }
 
@@ -41,20 +35,29 @@ class PendidikanResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('nama')->label('Jenjang'),
-                Tables\Columns\BadgeColumn::make('kategori')
-                    ->label('Kategori')
-                    ->colors([
-                        'primary' => 'Umum',
-                        'warning' => 'Khusus',
-                    ]),
+                Tables\Columns\TextColumn::make('nama')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('kategori'),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('kategori')
-                    ->options([
-                        'Umum' => 'Umum',
-                        'Khusus' => 'Khusus',
-                    ]),
+                //
+            ])
+            ->actions([
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
             ]);
     }
 

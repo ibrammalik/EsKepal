@@ -61,4 +61,9 @@ class Penduduk extends Model
     {
         return $this->belongsTo(Pendidikan::class);
     }
+
+    public function anggotaKeluarga()
+    {
+        return $this->hasMany(Penduduk::class, 'no_kk', 'no_kk');
+    }
 }

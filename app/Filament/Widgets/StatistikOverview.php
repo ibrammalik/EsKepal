@@ -6,30 +6,45 @@ use App\Models\Penduduk;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class StatistikOverview extends BaseWidget
 {
   protected function getStats(): array
   {
     $now = Carbon::now();
+    $user = Auth::user();
 
-    $total = Penduduk::count();
-    $laki = Penduduk::where('jenis_kelamin', 'L')->count();
-    $perempuan = Penduduk::where('jenis_kelamin', 'P')->count();
+    // Query dasar sesuai role user
+    $pendudukQuery = Penduduk::query();
+    if ($user->hasRole('ketua_rt')) {
+      $pendudukQuery->where('rt_id', $user->rt_id);
+    } elseif ($user->hasRole('ketua_rw')) {
+      $pendudukQuery->where('rw_id', $user->rw_id);
+    }
+    // admin_kelurahan => tidak difilter
 
-    // Jumlah KK berdasarkan no_kk unik
-    $jumlahKk = Penduduk::distinct('no_kk')->count('no_kk');
+    // Gunakan clone agar query tidak saling mempengaruhi
+    $total = (clone $pendudukQuery)->count();
+    $laki = (clone $pendudukQuery)->where('jenis_kelamin', 'L')->count();
+    $perempuan = (clone $pendudukQuery)->where('jenis_kelamin', 'P')->count();
+
+    // Jumlah KK (berdasarkan no_kk unik)
+    $jumlahKk = (clone $pendudukQuery)->distinct('no_kk')->count('no_kk');
 
     // Usia produktif 15–64 tahun
-    $usiaProduktif = Penduduk::whereBetween('tanggal_lahir', [
+    $usiaProduktif = (clone $pendudukQuery)->whereBetween('tanggal_lahir', [
       $now->copy()->subYears(64),
       $now->copy()->subYears(15),
     ])->count();
 
-    // Contoh kategori pendidikan umum
-    $pendidikanDasar = Penduduk::whereHas('pendidikan', fn($q) => $q->whereIn('nama', ['SD', 'MI']))->count();
-    $pendidikanMenengah = Penduduk::whereHas('pendidikan', fn($q) => $q->whereIn('nama', ['SMP', 'MTs', 'SMA', 'MA', 'SMK']))->count();
-    $pendidikanTinggi = Penduduk::whereHas('pendidikan', fn($q) => $q->whereIn('nama', ['D3', 'S1', 'S2', 'S3']))->count();
+    // Pendidikan (opsional: jika ingin dipakai lagi)
+    // $pendidikanDasar = (clone $pendudukQuery)
+    //     ->whereHas('pendidikan', fn($q) => $q->whereIn('nama', ['SD', 'MI']))->count();
+    // $pendidikanMenengah = (clone $pendudukQuery)
+    //     ->whereHas('pendidikan', fn($q) => $q->whereIn('nama', ['SMP', 'MTs', 'SMA', 'MA', 'SMK']))->count();
+    // $pendidikanTinggi = (clone $pendudukQuery)
+    //     ->whereHas('pendidikan', fn($q) => $q->whereIn('nama', ['D3', 'S1', 'S2', 'S3']))->count();
 
     return [
       Stat::make('Total Penduduk', $total)

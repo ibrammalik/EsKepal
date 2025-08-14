@@ -6,5 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class StatusKependudukan extends Model
 {
-    //
+    protected $fillable = [
+        'name',
+    ];
 }
